@@ -1,0 +1,8 @@
+/nav_drive_topic: "/vesc/high_level/ackermann_cmd_mux/input/nav_0"
+/camera_height: 256
+/camera_width: 256
+/camera_topic: "/camera/color/image_raw"
+/semantic_segmentation_path: "/home/car/f1tenth_ws/src/black_car/semanticCPPModel.pt"
+/lane_follow_path: "/home/car/f1tenth_ws/src/black_car/laneFollowerNetwork.pt"
+/image_output: "/semantic_segmentation/output"
+/object_detection_topic: "/object_detection/objects"

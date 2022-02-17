@@ -37,7 +37,7 @@
           if(angle >= -.5517 && angle <= 0.5517) {
             TTC = distance / speed_angle;
 
-            if(TTC < 0.8) {
+            if(TTC < 1.5) {
               in_ttc_range = true;
             } 
           }

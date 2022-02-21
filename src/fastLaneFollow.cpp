@@ -7,12 +7,12 @@
 #include <math.h>
     
 
-    double RADIUS = 0.5;
-    double car_length = 0.3302;
+    double RADIUS = 0.7;
+    double car_length = 0.28;
+    double current_speed = 4;
     // publishers and subscribers
     ros::Subscriber scan_sub;
     ros::Publisher drive_pub;
-
 
 
     void scan_callback(const sensor_msgs::LaserScan::ConstPtr &scan_msg) {
@@ -69,6 +69,8 @@
       double max = 0;
       double max_angle = -5;
       double inc_angle3 = scan_msg->angle_min;
+      double first_angle;
+      double last_angle;
       
       //copy max array into its own array that we're gonna iterate through to find max distance from car in subarray
       //MIGHT HAVE TO LIMIT DEGREES IT CAN GRAB MAX FROM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -77,6 +79,13 @@
           max = scan_msg->ranges[i];
           max_angle = inc_angle3;
         }
+
+        if(i == first_index) {
+          first_angle = inc_angle3;
+        } else if (i == last_index) {
+          last_angle = inc_angle3;
+        }
+
         inc_angle3 += increment;
       }
 
@@ -106,10 +115,54 @@
         new_steering_angle = -new_steering_angle;
       }
 
+      if(new_steering_angle < first_angle || new_steering_angle > last_angle) {
+        new_steering_angle = max_angle;
+      }
+
+      // calculate ttc to closest wall in front of it ish
+      double inc_angle5 = scan_msg->angle_min;
+      double ttc_angle = 5;
+      double ttc_dist;
+
+      for(int i = 0; i < scan_msg->ranges.size(); i++) {
+        if(inc_angle5 > -0.2 && inc_angle5 < 0.2 && inc_angle5 <= ttc_angle) {
+          ttc_angle = inc_angle5;
+          ttc_dist = scan_msg->ranges[i];
+        }
+        inc_angle5 += increment;
+      }
+
+      double speed_angle = current_speed * cos(ttc_angle);
+
+      double ttc = ttc_dist / speed_angle;
+
+      //new weird shit
+
+      double relativeTTCDist = (ttc-0.5) * current_speed;
+
+      double allowableSpeed = sqrt(2 * 1.7 * relativeTTCDist);
+
+      if(abs(new_steering_angle) >(7.0/180)*M_PI){
+            if(allowableSpeed > 1){
+                allowableSpeed = 1;
+            }
+        }
+
+        if(ttc < 1.1 && allowableSpeed > 2) {
+          allowableSpeed = 2;
+        }
+
+      if(allowableSpeed > 2) {
+        allowableSpeed = 2;
+      }
+
+      double speed = allowableSpeed;
+      current_speed = speed;
+
       ackermann_msgs::AckermannDriveStamped steering_angle;
       steering_angle.drive.steering_angle = new_steering_angle;
-      steering_angle.drive.speed = 1;
-      ROS_INFO_STREAM(max_angle);
+      steering_angle.drive.speed = speed;
+      ROS_INFO_STREAM(speed);
 
       drive_pub.publish(steering_angle);
     
@@ -120,10 +173,9 @@
     {
       ros::init(argc, argv, "pure_pursuit");
       ros::NodeHandle n;
-        n = ros::NodeHandle();
-
-        std::string drive_topic;
-        n.getParam("/nav_drive_topic", drive_topic);
+      n = ros::NodeHandle();
+      std::string drive_topic;
+      n.getParam("/nav_drive_topic", drive_topic);
 
         scan_sub = n.subscribe<sensor_msgs::LaserScan>("/scan", 1000, scan_callback);
         drive_pub = n.advertise<ackermann_msgs::AckermannDriveStamped>(drive_topic, 1000);

@@ -7,7 +7,7 @@
 #include <math.h>
     
 
-    double RADIUS = 0.5;
+    double RADIUS = 0.7;
     double car_length = 0.28;
     double current_speed = 2;
     // publishers and subscribers

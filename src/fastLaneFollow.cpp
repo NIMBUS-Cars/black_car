@@ -7,9 +7,9 @@
 #include <math.h>
     
 
-    double RADIUS = 0.7;
+    double RADIUS = 0.5;
     double car_length = 0.28;
-    double current_speed = 4;
+    double current_speed = 2;
     // publishers and subscribers
     ros::Subscriber scan_sub;
     ros::Publisher drive_pub;
@@ -143,8 +143,8 @@
       double allowableSpeed = sqrt(2 * 1.7 * relativeTTCDist);
 
       if(abs(new_steering_angle) >(7.0/180)*M_PI){
-            if(allowableSpeed > 1){
-                allowableSpeed = 1;
+            if(allowableSpeed > 0.8){
+                allowableSpeed = 0.8;
             }
         }
 

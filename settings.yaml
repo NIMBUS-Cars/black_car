@@ -6,3 +6,12 @@
 /lane_follow_path: "/home/car/f1tenth_ws/src/black_car/laneFollowerNetwork.pt"
 /image_output: "/semantic_segmentation/output"
 /object_detection_topic: "/object_detection/objects"
+/speed_controller_path: "/home/car/f1tenth_ws/src/black_car/speedNetwork.pt"
+/in_fast_mode: false
+/wheelbase: 0.28 # meters
+/width: 0.56 # meters
+/max_speed: 7. #  meters/second
+/max_steering_angle: 0.4189 # radians
+/max_accel: 1.7 # meters/second^2
+/max_decel: 1.7 # meters/second^2
+/scan_topic: "/scan"

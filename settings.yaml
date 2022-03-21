@@ -10,7 +10,7 @@
 /in_fast_mode: false
 /wheelbase: 0.28 # meters
 /width: 0.56 # meters
-/max_speed: 7. #  meters/second
+/max_speed: 0.75 #  meters/second
 /max_steering_angle: 0.4189 # radians
 /max_accel: 1.7 # meters/second^2
 /max_decel: 1.7 # meters/second^2
